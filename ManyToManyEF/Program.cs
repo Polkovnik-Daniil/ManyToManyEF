@@ -6,16 +6,30 @@ using ManyToManyEF.Entity;
 Console.WriteLine("Hello, World!");
 using (AppDbContext appDbContext = new AppDbContext())
 {
-    Book book = new Book();
-    book.Name = "TestBook";
+    //Insert 
+    Genre genre_insert = new Genre();
+    genre_insert.Name = Guid.NewGuid().GetHashCode().ToString();
+    appDbContext.Genres.Add(genre_insert);
+    appDbContext.SaveChanges();
 
-    Genre genre = new Genre();
-    genre.Name = "TestGenre";
+    Book book_insert = new Book();
+    book_insert.Name = Guid.NewGuid().GetHashCode().ToString();
+    book_insert.Genres = new List<Genre>();
+    book_insert.Genres.Add(new Genre() { Name = genre_insert.Name }); 
+    appDbContext.Books.Add(book_insert);//error т.к. раньше данная информация уже была добавлена
+    appDbContext.SaveChanges();
+
+    //Update
+    Book book_update = new Book();
+    book_update.Name = Guid.NewGuid().GetHashCode().ToString();
+
+    Genre genre_update = new Genre();
+    genre_update.Name = Guid.NewGuid().GetHashCode().ToString();
     
-    appDbContext.Books.Add(book);
+    appDbContext.Books.Add(book_update);
     appDbContext.SaveChanges();
     
-    appDbContext.Genres.Add(genre);
+    appDbContext.Genres.Add(genre_update);
     appDbContext.SaveChanges();
     
     Book queryBook = appDbContext.Books.First();
@@ -23,6 +37,5 @@ using (AppDbContext appDbContext = new AppDbContext())
     
     queryBook.Genres = new List<Genre>();
     queryBook.Genres.Add(queryGenre);
-    appDbContext.SaveChanges();
-    
+    appDbContext.SaveChanges();    
 }
